@@ -1,0 +1,14 @@
+@media screen and (min-width: 1200px) {
+  #first {
+    flex-direction: row; /* Cambiado */
+  }
+  #drop-area {
+    width: 850px; /* Cambiado */
+    height: 500px;
+    margin-right: 20px; /* Nuevo */
+    margin-top: 20px;
+  }
+  #explain-form {
+    width: calc(100% - 850px - 20px); /* Cambiado */
+  }
+}

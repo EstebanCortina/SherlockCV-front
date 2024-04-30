@@ -1,6 +1,8 @@
+const api_url = process_env.api_url_testing;
+console.log(api_url);
 const dropArea = document.getElementById("drop-area");
 const pdfContainer = document.getElementById("pdf-container");
-const documents = [];
+const docs_to_send = [];
 
 // Escuchar evento drop en todo el documento
 document.addEventListener("drop", (e) => {
@@ -42,8 +44,8 @@ async function handleFiles(files, container) {
         viewport: scaledViewport,
       };
       await page.render(renderContext).promise;
-      documents.push(pdf);
-      console.log(documents);
+      docs_to_send.push(pdf);
+      console.log(docs_to_send);
     } else {
       alert("¡Por favor, selecciona solo archivos PDF!");
     }

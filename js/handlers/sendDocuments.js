@@ -1,4 +1,4 @@
-module.exports = (documents) => {
+export default (documents) => {
   if (!documents.length) {
     return false;
   }

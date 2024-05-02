@@ -2,6 +2,7 @@ const api_url = process_env.api_url_testing;
 console.log(api_url);
 const dropArea = document.getElementById("drop-area");
 const pdfContainer = document.getElementById("pdf-container");
+const btnAnalysis = document.getElementById("btn-analysis");
 const docs_to_send = [];
 
 // Escuchar evento drop en todo el documento
@@ -15,6 +16,8 @@ document.addEventListener("drop", (e) => {
 document.addEventListener("dragover", (e) => {
   e.preventDefault();
 });
+
+btnAnalysis.addEventListener("click", () => {});
 
 async function handleFiles(files, container) {
   let currentRow = container.lastElementChild;

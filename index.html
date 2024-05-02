@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="./styles/style.css" />
     <link rel="stylesheet" href="./styles/components.css" />
     <link rel="stylesheet" href="./styles/media.css" />
+    <script src="./env.js"></script>
   </head>
   <body>
     <section id="first">
@@ -21,8 +22,12 @@
         <div id="pdf-container"></div>
       </div>
       <div id="explain-form">
-        <textarea id="job-description-area"></textarea>
-        <button class="accept-btn">Analizar</button>
+        <form>
+          <textarea id="job-description-area"></textarea>
+          <button id="btn-analysis" class="accept-btn" type="button">
+            Analizar
+          </button>
+        </form>
       </div>
     </section>
 

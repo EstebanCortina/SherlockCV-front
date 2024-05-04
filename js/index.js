@@ -1,7 +1,9 @@
-const api_url = process_env.api_url_testing;
+const api_url = process_env.api_url;
 console.log(api_url);
 const dropArea = document.getElementById("drop-area");
 const pdfContainer = document.getElementById("pdf-container");
+const AnalyzeBtn = document.getElementById("analyze-btn");
+
 const docs_to_send = [];
 
 // Escuchar evento drop en todo el documento
@@ -16,10 +18,15 @@ document.addEventListener("dragover", (e) => {
   e.preventDefault();
 });
 
+AnalyzeBtn.addEventListener("click", () => {
+  sendDocs(docs_to_send);
+});
+
 async function handleFiles(files, container) {
   let currentRow = container.lastElementChild;
   for (const file of files) {
-    if (file.type === "application/pdf") {
+    if (file.type === "application/pdf" ||
+        file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
       const loadingTask = pdfjsLib.getDocument(URL.createObjectURL(file));
       const pdf = await loadingTask.promise;
       const pageNumber = 1;
@@ -44,10 +51,31 @@ async function handleFiles(files, container) {
         viewport: scaledViewport,
       };
       await page.render(renderContext).promise;
-      docs_to_send.push(pdf);
-      console.log(docs_to_send);
+      docs_to_send.push(file);
     } else {
       alert("¡Por favor, selecciona solo archivos PDF!");
     }
   }
+}
+
+async function sendDocs(docs_to_send) {
+  if (!docs_to_send.length) {
+    alert("Agregue documentos al area de analisis");
+    return false;
+  }
+  const formData = new FormData();
+
+  // Agregar todos los archivos al FormData
+  for (let i = 0; i < docs_to_send.length; i++) {
+    const file = docs_to_send[i];
+    formData.append(file.name, file);
+  }
+
+  // Enviar el FormData al servidor
+  fetch(`${api_url}/upload`, {
+    method: "POST",
+    body: formData,
+  })
+    .then((response) => response.json())
+    .then((data) => console.log(data));
 }

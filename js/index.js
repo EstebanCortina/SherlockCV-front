@@ -3,6 +3,8 @@ console.log(api_url);
 const dropArea = document.getElementById("drop-area");
 const pdfContainer = document.getElementById("pdf-container");
 const AnalyzeBtn = document.getElementById("analyze-btn");
+const sortedPdfContainer = document.getElementById("sorted-pdfs-container");
+const job_description = document.getElementById("job-description-area");
 
 const docs_to_send = [];
 
@@ -68,14 +70,47 @@ async function sendDocs(docs_to_send) {
   // Agregar todos los archivos al FormData
   for (let i = 0; i < docs_to_send.length; i++) {
     const file = docs_to_send[i];
-    formData.append(file.name, file);
+    formData.append("candidates_files", file);
   }
+  formData.append("data", JSON.stringify({
+    job_position_id: "1",
+    job_position_name: 'Backend Developer',
+    job_position_description: `
+    Se busca desarrollador backend especializado en programación de APIs REST
+    para desarrollar aplicación web. Es importante la comunicación, el trabajo en equipo y ser participativo.
+    El trabajo es remoto y se requiere de un mínimo de 2 años de experiencia desarrollando.
+    -Requisitos Obligatorios: Inglés intermedio o avanzado, experiencia laboral de 1 año mínimo, SQL, JavaScript,
+     y Servicios en la nube.
+    -Requisitos Opcionales(favorable a tener): Conocimiento en patrones de diseño, arquitectura de software,
+    CI/CD, Terraform, Jenkins, Docker y certificaciones de cualquier tipo.`,
+    score_list: {
+      'ingles intermedio': 50,
+      'experiencia': 50
+    }
+  }));
 
   // Enviar el FormData al servidor
-  fetch(`${api_url}/upload`, {
+  fetch(`${api_url}/start-analysis`, {
     method: "POST",
     body: formData,
   })
     .then((response) => response.json())
-    .then((data) => console.log(data));
+    .then((data) => {
+      console.log(data)
+      data.data.final_analysis.forEach((item) => {
+        sortedPdfContainer.innerHTML += `
+        <div class="sorted-pdf-item">
+          <div><span>${item.candidate_overall}</span></div>
+          <div><img src=${item.front_page_url}></div><br>
+          <div><strong>${item.file_name}</strong></div><br>       
+          <div><strong>Nombre:</strong> ${item.candidate_name}</div><br>
+          <div><strong>Resumen de candidato:</strong> ${item.candidate_resume}</div><br>
+          <div><strong>Razones para contratar:</strong> ${item.candidate_reasons}</div><br>
+          <div><strong>Fortalezas:</strong> ${item.candidate_strengths}</div><br>
+          <div><strong>Debilidades:</strong> ${item.candidate_weaknesses}</div>
+        </div>
+          <br>
+        `
+       })
+    });
 }
